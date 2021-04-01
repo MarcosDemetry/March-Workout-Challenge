@@ -11,11 +11,8 @@ process_data <- function(DT) {
     # Keeping relevant variables
     DT <- DT[, .SD, .SDcols = -cols]
 
-    setnames(DT, c("Cum.Alexander", "Cum.Camila", "Cum.Fanny", "Cum.Marcos", "Cum.Mary", "Cum.Rose"), cols)
-    
-    # Getting current leader
-    DT[, current_leader := colnames(.SD)[max.col(.SD, ties.method = "random")], .SDcols = cols]
-    
+    setnames(DT, paste0("Cum.", cols), cols)
+
     # Reshaping wide to long
     DT.long = melt(DT, id.vars = c("Date"),
                 measure.vars = cols)
@@ -23,10 +20,10 @@ process_data <- function(DT) {
     # Renaming
     setnames(DT.long, c("variable", "value"), c("participant", "nr_workouts"))
 
-    # Getting leader
+    # Leader (per day)
     DT.long[, current_leader := .SD[which.max(nr_workouts)], by = Date]
 
-    # Getting loser
+    # Loser (per day)
     DT.long[, current_loser := .SD[which.min(nr_workouts)], by = Date]
 
     return(DT.long)
