@@ -50,7 +50,7 @@ create_line_gif <- function(DT) {
                       Loser: {DT$current_loser[which.min(abs(DT$Date-frame_along))]}',
             x = 'Date', y = 'Number of Workouts')
 
-    gganimate::animate(p, nframes = 100, fps = 5, renderer = gifski_renderer())
+    gganimate::animate(p, nframes = 100, fps = 5, renderer = gifski_renderer(), end_pause = 10)
     gganimate::anim_save("animateOutput_line.gif", animation = last_animation(), path = "graphics/")
 
 }
