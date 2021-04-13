@@ -5,7 +5,8 @@ process_data <- function(DT) {
     setDT(DT, key = "Date")
 
     # Creating cumulative sums per participant
-    cols <- c("Alexander", "Camila", "Fanny", "Marcos", "Mary", "Rose")
+    ignore <- "Date"
+    cols <- setdiff(names(DT), ignore)
     DT[, paste0("Cum.", cols) := cumsum(.SD), .SDcols = cols]
 
     # Keeping relevant variables
@@ -32,9 +33,10 @@ process_data <- function(DT) {
 create_line_gif <- function(DT) {
     require(ggplot2)
     require(gganimate)
+    require(data.table)
 
     participant_colors <- c("darkorange", "orangered", "violetred", "purple", "black", "darkblue")
-    participant_labels <- c("Alexander", "Camila", "Fanny", "Marcos", "Mary", "Rose")
+    participant_labels <- DT[, participant_labels := tstrsplit(participant, ".", fixed = TRUE)]
 
     p <- ggplot(DT,
                aes(x = Date, y = nr_workouts,
